@@ -80,8 +80,78 @@ public class Marker {
      * can have the same hash.
      * Example: a = "ACGTAC", b = "TTACGT", k = 4: the words of a are ACGT, CGTA, GTAC; only ACGT is in b, so the answer is 1.
      */
-    public static int sharedWords(String a, String b, int k) {
-        // TODO Mission 4
-        return -1;
+
+    private static final long BASE = 31;
+    private static final long MOD = 1000000007L;
+
+    private static long firstHash(String s, int start, int k) {
+        long hash = 0;
+
+        for (int i = 0; i < k; i++) {
+            hash = (hash * BASE + s.charAt(start + i)) % MOD;
+        }
+
+        return hash;
     }
+
+    private static boolean sameLetters(String a, int ai,
+                                       String b, int bi, int k) {
+        for (int i = 0; i < k; i++) {
+            if (a.charAt(ai + i) != b.charAt(bi + i)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static int sharedWords(String a, String b, int k) {
+        if (k <= 0 || a.length() < k || b.length() < k) {
+            return 0;
+        }
+
+        long power = 1;
+
+        for (int i = 1; i < k; i++) {
+            power = (power * BASE) % MOD;
+        }
+
+        Map<Long, List<Integer>> words = new HashMap<>();
+
+        long hashB = firstHash(b, 0, k);
+
+        for (int i = 0; i + k <= b.length(); i++) {
+            if (i > 0) {
+                hashB = (hashB - b.charAt(i - 1) * power % MOD + MOD) % MOD;
+                hashB = (hashB * BASE + b.charAt(i + k - 1)) % MOD;
+            }
+
+            words.computeIfAbsent(hashB, h -> new ArrayList<>()).add(i);
+        }
+
+        int count = 0;
+        long hashA = firstHash(a, 0, k);
+
+        for (int i = 0; i + k <= a.length(); i++) {
+            if (i > 0) {
+                hashA = (hashA - a.charAt(i - 1) * power % MOD + MOD) % MOD;
+                hashA = (hashA * BASE + a.charAt(i + k - 1)) % MOD;
+            }
+
+            List<Integer> positions = words.get(hashA);
+
+            if (positions == null) {
+                continue;
+            }
+
+            for (int pos : positions) {
+                if (sameLetters(a, i, b, pos, k)) {
+                    count++;
+                    break;
+                }
+            }
+        }
+
+        return count;
+    }
+
 }
