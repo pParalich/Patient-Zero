@@ -22,7 +22,7 @@ Longest chain: 26
 
 My outbreak report:
 
-![outbreak](output/outbreak.png)
+![outbreak](outbreak.png)
 
 ## Questions
 
