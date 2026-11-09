@@ -81,6 +81,7 @@ public class Marker {
      * Example: a = "ACGTAC", b = "TTACGT", k = 4: the words of a are ACGT, CGTA, GTAC; only ACGT is in b, so the answer is 1.
      */
 
+
     private static final long BASE = 31;
     private static final long MOD = 1000000007L;
 
